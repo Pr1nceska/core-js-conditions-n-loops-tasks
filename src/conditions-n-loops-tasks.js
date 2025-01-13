@@ -415,24 +415,59 @@ function rotateMatrix(matrix) {
  */
 function sortByAsc(arr) {
   const newArr = arr;
-  const len = newArr.length;
 
-  for (let i = 0; i < len - 1; i += 1) {
-    let minIdx = i;
+  function merge(leftStart, middle, rightEnd) {
+    const leftSize = middle - leftStart + 1;
+    const rightSize = rightEnd - middle;
+    const leftArr = [];
+    const rightArr = [];
 
-    for (let j = i + 1; j < len; j += 1) {
-      if (newArr[j] < newArr[minIdx]) {
-        minIdx = j;
+    for (let i = 0; i < leftSize; i += 1) {
+      leftArr[i] = newArr[leftStart + i];
+    }
+    for (let j = 0; j < rightSize; j += 1) {
+      rightArr[j] = newArr[middle + 1 + j];
+    }
+
+    let i = 0;
+    let j = 0;
+    let k = leftStart;
+
+    while (i < leftSize && j < rightSize) {
+      if (leftArr[i] <= rightArr[j]) {
+        newArr[k] = leftArr[i];
+        i += 1;
+        k += 1;
+      } else {
+        newArr[k] = rightArr[j];
+        j += 1;
+        k += 1;
       }
     }
 
-    if (minIdx !== i) {
-      const temp = newArr[i];
-      newArr[i] = newArr[minIdx];
-      newArr[minIdx] = temp;
+    while (i < leftSize) {
+      newArr[k] = leftArr[i];
+      i += 1;
+      k += 1;
+    }
+
+    while (j < rightSize) {
+      newArr[k] = rightArr[j];
+      j += 1;
+      k += 1;
     }
   }
 
+  function mergeSort(left, right) {
+    if (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      mergeSort(left, mid);
+      mergeSort(mid + 1, right);
+      merge(left, mid, right);
+    }
+  }
+
+  mergeSort(0, newArr.length - 1);
   return newArr;
 }
 
